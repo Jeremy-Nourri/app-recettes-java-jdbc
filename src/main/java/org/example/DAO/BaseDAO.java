@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BaseDAO<T> {
-    protected Connection _connection;
+    protected Connection connection;
     protected PreparedStatement preparedStatement;
     protected String request;
     protected ResultSet resultSet;
@@ -20,4 +20,16 @@ public abstract class BaseDAO<T> {
     public abstract boolean delete(T element)throws SQLException;
     public abstract T get(int id) throws SQLException;
     public abstract List<T> get() throws SQLException;
+
+    protected void close () throws SQLException {
+        if(!connection.isClosed()){
+            connection.close();
+        }
+        if (!preparedStatement.isClosed()){
+            preparedStatement.close();
+        }
+        if(!resultSet.isClosed()){
+            resultSet.close();
+        }
+    }
 }
