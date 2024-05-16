@@ -13,17 +13,17 @@ public class Ihm {
         scanner = new Scanner(System.in);
         ihmIngredient = new IhmIngredient(scanner);
         ihmCommentaire = new IhmCommentaire();
-        ihmEtape = new IhmEtape();
-        ihmRecette = new IhmRecette();
+        ihmEtape = new IhmEtape(scanner);
+        ihmRecette = new IhmRecette(scanner);
     }
 
     public void start () throws SQLException {
         int entry;
         while(true){
             System.out.println("--- Application gestion de recette ---");
-            System.out.println("1/ menu animal");
-            System.out.println("2/ menu meal");
-            System.out.println("3/ menu enclos");
+            System.out.println("1/ menu recette");
+//            System.out.println("2/ menu meal");
+//            System.out.println("3/ menu enclos");
             entry = scanner.nextInt();
             scanner.nextLine();
 

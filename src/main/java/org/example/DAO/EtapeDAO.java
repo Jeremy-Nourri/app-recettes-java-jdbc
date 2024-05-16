@@ -1,7 +1,6 @@
 package org.example.DAO;
 
 import org.example.entity.Etape;
-import org.example.entity.Ingredient;
 import org.example.utils.DataBaseManager;
 
 import java.sql.SQLException;
@@ -39,12 +38,51 @@ public class EtapeDAO extends BaseDAO<Etape> {
 
     @Override
     public Etape update(Etape element) throws SQLException {
-        return null;
+        try {
+            connection = DataBaseManager.getConnection();
+            request = "UPDATE Etape SET description = ? WHERE id = ?";
+            preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setString(1, element.getDescription());
+            preparedStatement.setInt(2, element.getId());
+
+            if (preparedStatement.executeUpdate() == 1) {
+                connection.commit();
+                return element;
+            }
+            throw new SQLException();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            connection.rollback();
+            return null;
+
+        } finally {
+            close();
+        }
     }
 
     @Override
     public boolean delete(Etape element) throws SQLException {
-        return false;
+        try {
+            connection = DataBaseManager.getConnection();
+            request = "DELETE FROM etape WHERE id = ?";
+            preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setInt(1, element.getId());
+
+            if (preparedStatement.executeUpdate() == 1) {
+                connection.commit();
+                return true;
+            }
+            throw new SQLException();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            connection.rollback();
+            return false;
+
+        } finally {
+            close();
+        }
     }
 
     @Override

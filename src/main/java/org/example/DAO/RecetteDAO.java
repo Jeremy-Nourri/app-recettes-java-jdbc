@@ -1,6 +1,5 @@
 package org.example.DAO;
 
-import org.example.entity.Difficulte;
 import org.example.entity.Recette;
 import org.example.utils.DataBaseManager;
 

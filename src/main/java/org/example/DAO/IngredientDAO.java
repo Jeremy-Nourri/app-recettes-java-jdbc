@@ -48,6 +48,7 @@ public class IngredientDAO extends BaseDAO<Ingredient> {
             return ingredient;
 
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             connection.rollback();
             return null;
 
@@ -73,6 +74,7 @@ public class IngredientDAO extends BaseDAO<Ingredient> {
             throw new SQLException();
 
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             connection.rollback();
             return null;
 
@@ -120,9 +122,10 @@ public class IngredientDAO extends BaseDAO<Ingredient> {
                 connection.commit();
                 return true;
             }
-            throw new SQLException("La suppression a échoué");
+            throw new SQLException();
 
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             connection.rollback();
             return false;
 

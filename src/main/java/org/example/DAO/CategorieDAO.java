@@ -1,7 +1,6 @@
 package org.example.DAO;
 
 import org.example.entity.Categorie;
-import org.example.entity.Commentaire;
 import org.example.utils.DataBaseManager;
 
 import java.sql.SQLException;
