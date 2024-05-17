@@ -1,16 +1,14 @@
 package org.example.utils.ihm;
 
 import org.example.DAO.EtapeDAO;
-import org.example.DAO.IngredientDAO;
 import org.example.entity.Etape;
-import org.example.entity.Ingredient;
 
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class IhmEtape {
     Scanner scanner;
-    private EtapeDAO etapeDAO;
+    private final EtapeDAO etapeDAO;
 
     public IhmEtape(Scanner scanner) {
         this.scanner = scanner;

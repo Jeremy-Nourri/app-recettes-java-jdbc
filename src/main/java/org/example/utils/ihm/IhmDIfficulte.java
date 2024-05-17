@@ -6,10 +6,11 @@ import org.example.entity.Difficulte;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+@Getter
+
 public class IhmDIfficulte {
     Scanner scanner;
 
-    @Getter
     private Difficulte difficulteChoisie;
     public IhmDIfficulte(Scanner scanner) {
         this.scanner = scanner;

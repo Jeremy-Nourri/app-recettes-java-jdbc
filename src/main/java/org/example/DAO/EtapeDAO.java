@@ -1,6 +1,7 @@
 package org.example.DAO;
 
 import org.example.entity.Etape;
+import org.example.entity.Ingredient;
 import org.example.utils.DataBaseManager;
 
 import java.sql.SQLException;
@@ -87,7 +88,28 @@ public class EtapeDAO extends BaseDAO<Etape> {
 
     @Override
     public Etape get(int id) throws SQLException {
-        return null;
+        try {
+            connection = DataBaseManager.getConnection();
+            request = "SELECT * FROM etape WHERE id = ?";
+            preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return Etape.builder()
+                        .id(resultSet.getInt("id"))
+                        .description(resultSet.getString("description"))
+                        .build();
+            }
+            return null;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+
+        } finally {
+            close();
+        }
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Ihm {
 
             switch (entry){
                 case 1:
-                    ihmIngredient.start();
+                    ihmRecette.start();
                     break;
 //                case 2:
 //                    mealIhm.start();

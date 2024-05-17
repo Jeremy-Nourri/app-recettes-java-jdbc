@@ -16,5 +16,5 @@ public class Recette {
     private Difficulte difficulte;
     private List<Etape> listeEtapes;
     private List<Commentaire> listeCommentaires;
-    private List<Categorie> listeCategories;
+    private Categorie categorie;
 }

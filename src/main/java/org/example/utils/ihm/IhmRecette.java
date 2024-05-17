@@ -1,16 +1,17 @@
 package org.example.utils.ihm;
 
 import org.example.DAO.RecetteDAO;
+import org.example.entity.Categorie;
 import org.example.entity.Difficulte;
 import org.example.entity.Recette;
 
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class IhmRecette {
+public class  IhmRecette {
 
     Scanner scanner;
-    private RecetteDAO recetteDAO;
+    private final RecetteDAO recetteDAO;
 
     public IhmRecette(Scanner scanner) {
         this.scanner = scanner;
@@ -44,7 +45,7 @@ public class IhmRecette {
         }
     }
 
-    private void updateRecette() {
+    private void updateRecette() throws SQLException {
         System.out.println("-- Modification d'une recette --");
         System.out.println("Tapez l'id de la recette :");
         int id = scanner.nextInt();
@@ -55,37 +56,55 @@ public class IhmRecette {
 
             if (recette != null) {
 
-                System.out.println("Nom actuel de la recette : " + recette.getNom());
-                System.out.println("Entrez le nouveau nom de la recette :");
-                String newNom = scanner.nextLine();
+                String nom;
+                int tempsPrep;
+                int tempsCuisson;
 
-                System.out.println("Temps de préparation actuel de la recette : " + recette.getTempsPrep());
-                System.out.println("Entrez le nouveau temps de préparation en minutes :");
-                int newTempsPrep = scanner.nextInt();
-                scanner.nextLine();
+                do {
+                    System.out.println("Tapez le nom de la recette :");
+                    nom = scanner.nextLine();
+                    if (nom.isEmpty()) {
+                        System.out.println("Le nom ne peut pas être vide");
+                    }
+                } while (nom.isEmpty());
 
-                System.out.println("Temps de cuisson actuel de la recette : " + recette.getTempsCuisson());
-                System.out.println("Entrez le nouveau temps de cuisson en minutes :");
-                int newTempsCuisson = scanner.nextInt();
-                scanner.nextLine();
+                do {
+                    System.out.println("Tapez le temps de préparation en minutes :");
+                    tempsPrep = scanner.nextInt();
+                    scanner.nextLine();
+                    if (tempsPrep < 0) {
+                        System.out.println("Le temps de préparation doit être positif");
+                    }
+                } while (tempsPrep < 0);
 
-                System.out.println("Difficulté actuelle de la recette : " + recette.getDifficulte());
+                do {
+                    System.out.println("Tapez le temps de cuisson en minutes :");
+                    tempsCuisson = scanner.nextInt();
+                    scanner.nextLine();
+                    if (tempsCuisson < 0) {
+                        System.out.println("Le temps de cuisson doit être positif");
+                    }
+                } while (tempsCuisson < 0);
 
                 IhmDIfficulte ihmDIfficulte = new IhmDIfficulte(scanner);
                 ihmDIfficulte.start();
-                Difficulte newDifficulte = ihmDIfficulte.getDifficulteChoisie();
 
-                recette.setDifficulte(newDifficulte);
-                recette.setNom(newNom);
-                recette.setTempsPrep(newTempsPrep);
-                recette.setTempsCuisson(newTempsCuisson);
+                Difficulte difficulte = ihmDIfficulte.getDifficulteChoisie();
+
+                IhmCategorie ihmCategorie = new IhmCategorie(scanner);
+
+                Categorie categorie = ihmCategorie.createCategorie();
 
                 try {
-                    if (recetteDAO.update(recette) != null) {
-                        System.out.println("Rcette mise à jour avec succès");
-                    } else {
-                        System.out.println("La mise à jour de la recette a échouée");
-                    }
+                    Recette newRecette = recetteDAO.update(Recette.builder()
+                            .id(id)
+                            .nom(nom)
+                            .tempsPrep(tempsPrep)
+                            .tempsCuisson(tempsCuisson)
+                            .categorie(categorie)
+                            .difficulte(difficulte)
+                            .build());
+                    System.out.println("Recette modifiée : " + newRecette);
 
                 } catch (SQLException e) {
                     throw new RuntimeException("Erreur lors de la mise à jour de la recette", e);
@@ -101,18 +120,60 @@ public class IhmRecette {
     }
 
     private void createRecette() throws SQLException {
-        System.out.println("-- Création d'une recette' --");
-        System.out.println("Tapez le nom de la recette :");
-        String nom = scanner.nextLine();
+
+        String nom;
+        int tempsPrep;
+        int tempsCuisson;
+        Categorie categorie;
+        Difficulte difficulte;
+
+        System.out.println("-- Création d'une recette --");
+
+        do {
+            System.out.println("Tapez le nom de la recette :");
+            nom = scanner.nextLine();
+            if (nom.isEmpty()) {
+                System.out.println("Le nom ne peut pas être vide");
+            }
+        } while (nom.isEmpty());
+
+        do {
+            System.out.println("Tapez le temps de préparation en minutes :");
+            tempsPrep = scanner.nextInt();
+            scanner.nextLine();
+            if (tempsPrep < 0) {
+                System.out.println("Le temps de préparation doit être positif");
+            }
+        } while (tempsPrep < 0);
+
+        do {
+            System.out.println("Tapez le temps de cuisson en minutes :");
+            tempsCuisson = scanner.nextInt();
+            scanner.nextLine();
+            if (tempsCuisson < 0) {
+                System.out.println("Le temps de cuisson doit être positif");
+            }
+        } while (tempsCuisson < 0);
+
+        IhmDIfficulte ihmDIfficulte = new IhmDIfficulte(scanner);
+        ihmDIfficulte.start();
+
+        difficulte = ihmDIfficulte.getDifficulteChoisie();
+
+        IhmCategorie ihmCategorie = new IhmCategorie(scanner);
+
+        categorie = ihmCategorie.createCategorie();
 
         try {
-            Recette recette = recetteDAO.save(Recette.builder().nom(nom).build());
+            Recette recette = recetteDAO.save(Recette.builder()
+                    .nom(nom)
+                    .tempsPrep(tempsPrep)
+                    .tempsCuisson(tempsCuisson)
+                    .categorie(categorie)
+                    .difficulte(difficulte)
+                    .build());
+            System.out.println("Recette créée : " + recette);
 
-            if (recette != null) {
-                System.out.println("Ingrédient a été créé avec succès " + recette);
-            } else {
-                System.out.println("Erreur lors de la creation de la recette");
-            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

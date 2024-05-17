@@ -1,6 +1,7 @@
 package org.example.DAO;
 
 import org.example.entity.Categorie;
+import org.example.entity.Ingredient;
 import org.example.utils.DataBaseManager;
 
 import java.sql.SQLException;
@@ -36,7 +37,27 @@ public class CategorieDAO extends BaseDAO<Categorie> {
 
     @Override
     public Categorie update(Categorie element) throws SQLException {
-        return null;
+        try {
+            connection = DataBaseManager.getConnection();
+            request = "UPDATE Categorie SET nom = ? WHERE id = ?";
+            preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setString(1, element.getNom());
+            preparedStatement.setInt(2, element.getId());
+
+            if (preparedStatement.executeUpdate() == 1) {
+                connection.commit();
+                return element;
+            }
+            throw new SQLException();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            connection.rollback();
+            return null;
+
+        } finally {
+            close();
+        }
     }
 
     @Override
@@ -46,7 +67,28 @@ public class CategorieDAO extends BaseDAO<Categorie> {
 
     @Override
     public Categorie get(int id) throws SQLException {
-        return null;
+        try {
+            connection = DataBaseManager.getConnection();
+            request = "SELECT * FROM categorie WHERE id = ?";
+            preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return Categorie.builder()
+                        .id(resultSet.getInt("id"))
+                        .nom(resultSet.getString("nom"))
+                        .build();
+            }
+            return null;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+
+        } finally {
+            close();
+        }
     }
 
     @Override

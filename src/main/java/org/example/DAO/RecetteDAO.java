@@ -12,12 +12,13 @@ public class RecetteDAO extends BaseDAO<Recette>{
     public Recette save(Recette element) throws SQLException {
         try{
             connection = DataBaseManager.getConnection();
-            request = "INSERT INTO etape (nom, tempsPrep, tempsCuisson, difficulte) VALUE (?,?,?,?)";
+            request = "INSERT INTO etape (nom, tempsPrep, tempsCuisson, difficulte, categorie) VALUE (?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, element.getNom());
             preparedStatement.setInt(2, element.getTempsPrep());
             preparedStatement.setInt(3, element.getTempsCuisson());
             preparedStatement.setString(4, String.valueOf(element.getDifficulte()));
+            preparedStatement.setString(5, String.valueOf(element.getCategorie()));
             int nbrow = preparedStatement.executeUpdate();
             resultSet = preparedStatement.getGeneratedKeys();
             Recette recette = null;
@@ -27,6 +28,7 @@ public class RecetteDAO extends BaseDAO<Recette>{
                         .tempsPrep(element.getTempsPrep())
                         .tempsCuisson(element.getTempsCuisson())
                         .difficulte(element.getDifficulte())
+                        .categorie(element.getCategorie())
                         .id(resultSet.getInt(1))
                         .build();
             }

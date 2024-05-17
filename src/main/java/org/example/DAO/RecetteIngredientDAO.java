@@ -1,10 +1,12 @@
 package org.example.DAO;
 
+import org.example.entity.Ingredient;
 import org.example.entity.RecetteIngredient;
 import org.example.utils.DataBaseManager;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecetteIngredientDAO extends BaseDAO<RecetteIngredient> {
@@ -18,9 +20,7 @@ public class RecetteIngredientDAO extends BaseDAO<RecetteIngredient> {
             preparedStatement.setInt(2, element.getId_ingredient());
             int nbrow = preparedStatement.executeUpdate();
             resultSet = preparedStatement.getGeneratedKeys();
-            if(resultSet.next()){
-                element.setId(resultSet.getInt(1));
-            }
+
             if(nbrow != 1){
                 connection.rollback();
             }
@@ -52,6 +52,23 @@ public class RecetteIngredientDAO extends BaseDAO<RecetteIngredient> {
 
     @Override
     public List<RecetteIngredient> get() throws SQLException {
-        return null;
+        return List.of();
     }
-}
+
+    public List<Ingredient> AllIngredientsByRecetteId(int id_recette) throws SQLException {
+        List<Ingredient> ingredients = new ArrayList<>();
+        request ="SELECT * FROM ingredient INNER JOIN recette_ingredient ON ingredient.id = recette_ingredient.id_ingredient WHERE recette_ingredient.id_recette = ?";
+        preparedStatement = connection.prepareStatement(request);
+        preparedStatement.setInt(1, id_recette);
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            Ingredient ingredient = Ingredient.builder()
+                    .id(resultSet.getInt("id"))
+                    .nom(resultSet.getString("nom"))
+                    .build();
+            ingredients.add(ingredient);
+        }
+        return ingredients;
+    }
+    }
+
